@@ -63,8 +63,14 @@ services:
         SPE_IMAGE: ${SITECORE_MODULE_REGISTRY}sitecore-spe-assets:${SPE_VERSION}
         SXA_IMAGE: ${SITECORE_MODULE_REGISTRY}sitecore-sxa-xp1-assets:${SXA_VERSION}
         TOOLING_IMAGE: ${SITECORE_TOOLS_REGISTRY}sitecore-docker-tools-assets:${TOOLS_VERSION}
+        #andrew newly added
+        NODEJS_VERSION: ${NODEJS_VERSION}
         SOLUTION_IMAGE: ${REGISTRY}${COMPOSE_PROJECT_NAME}-solution:${VERSION:-latest}
         HORIZON_RESOURCES_IMAGE: ${SITECORE_MODULE_REGISTRY}horizon-integration-xp0-assets:${HORIZON_ASSET_VERSION}
+        #andrew newly added
+        MANAGEMENT_SERVICES_IMAGE: ${SITECORE_MODULE_REGISTRY}sitecore-management-services-xp1-assets:${MANAGEMENT_SERVICES_VERSION}
+        HEADLESS_SERVICES_IMAGE: ${SITECORE_MODULE_REGISTRY}sitecore-headless-services-xp1-assets:${HEADLESS_SERVICES_VERSION}
+        RENDERING_IMAGE: ${REGISTRY}${COMPOSE_PROJECT_NAME}-xp1-rendering:${VERSION:-latest}
     depends_on:
       - solution
     volumes:
@@ -72,8 +78,11 @@ services:
       - ${LOCAL_DATA_PATH}\cm:C:\inetpub\wwwroot\App_Data\logs
     environment:
       SITECORE_DEVELOPMENT_PATCHES: CustomErrorsOff
+      Sitecore_AppSettings_exmEnabled:define: "no" # remove to turn on EXM
+      Sitecore_JSS_ImportUser: ${JSS_IMPORT_USER:-sitecore\admin}
+      RENDERING_HOST_PUBLIC_URI: "https://${RENDERING_HOST}"
       Sitecore_Horizon_ClientHost: https://${HRZ_HOST}
-    entrypoint: powershell -Command "& C:\tools\entrypoints\iis\Development.ps1"
+    entrypoint: powershell.exe -Command "& C:\tools\entrypoints\iis\Development.ps1"
 
   xconnect:
     image: ${REGISTRY}${COMPOSE_PROJECT_NAME}-xp0-xconnect:${VERSION:-latest}
